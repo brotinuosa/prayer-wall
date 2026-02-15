@@ -101,6 +101,21 @@ async function loadPrayers() {
 }
 
 loadPrayers();
+  const adminToggle = document.getElementById("adminToggle");
+const adminPanel = document.getElementById("adminPanel");
+const adminTitle = document.getElementById("adminTitle");
+
+adminToggle.addEventListener("click", () => {
+  const password = prompt("Enter Admin Password:");
+
+  if (password === "1234") {
+    adminPanel.style.display = "block";
+    adminTitle.style.display = "block";
+    loadPending();
+  } else {
+    alert("Wrong password");
+  }
+});
 
 </script>
 </body>
