@@ -106,9 +106,15 @@ loadPrayers();
   adminPanel.innerHTML = "";
 
   const q = query(
-    collection(db, "prayers"),
-    where("status", "==", "pending")
-  );
+  collection(db, "prayers"),
+  where("status", "==", "approved"),
+  orderBy("date", "desc")
+);
+    const q = query(
+  collection(db, "prayers"),
+  where("status", "==", "approved")
+);
+    
 
   const snapshot = await getDocs(q);
 
