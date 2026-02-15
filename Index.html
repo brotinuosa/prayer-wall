@@ -1,1 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Prayer Wall</title>
+  <link rel="stylesheet" href="style.css">
+</head>
 
+<body>
+
+<div class="container">
+  <h1>Prayer Wall 🙏</h1>
+
+  <form id="prayerForm">
+    <input type="text" id="name" placeholder="Your Name" required>
+    <textarea id="intention" placeholder="Write your prayer..." required></textarea>
+    <button type="submit">Submit Prayer</button>
+  </form>
+
+  <h2>Approved Prayers</h2>
+  <div id="prayerList"></div>
+</div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, query, where, orderBy } 
+from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyBWx8qpiH1PmowRf0mql0MxiKqLhDfQlZ4",
+  authDomain: "prayer-wall-c7a10.firebaseapp.com",
+  projectId: "prayer-wall-c7a10",
+  storageBucket: "prayer-wall-c7a10.firebasestorage.app",
+  messagingSenderId: "234838865859",
+  appId: "1:234838865859:web:6f42334b65329cf7beef76"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const form = document.getElementById("prayerForm");
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const name = document.getElementById("name").value;
+  const intention = document.getElementById("intention").value;
+
+  await addDoc(collection(db, "prayers"), {
+    name: name,
+    intention: intention,
+    date: new Date(),
+    status: "pending"
+  });
+
+  alert("Your prayer has been submitted and is awaiting approval 🙏");
+  form.reset();
+});
+
+async function loadPrayers() {
+  const prayerList = document.getElementById("prayerList");
+  prayerList.innerHTML = "";
+
+  const q = query(
+    collection(db, "prayers"),
+    where("status", "==", "approved"),
+    orderBy("date", "desc")
+  );
+
+  const snapshot = await getDocs(q);
+
+  snapshot.forEach((doc) => {
+    const data = doc.data();
+    prayerList.innerHTML += `
+      <div class="prayer-card">
+        <strong>${data.name}</strong>
+        <p>${data.intention}</p>
+      </div>
+    `;
+  });
+}
+
+loadPrayers();
+
+</script>
+</body>
+</html>
