@@ -1,1 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Approval</title>
+  <link rel="stylesheet" href="style.css">
+</head>
 
+<body>
+
+<div class="container">
+  <h1>Pending Prayer Approvals</h1>
+  <div id="pendingList"></div>
+</div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, getDocs, updateDoc, deleteDoc, doc, query, where } 
+from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  // Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyBWx8qpiH1PmowRf0mql0MxiKqLhDfQlZ4",
+  authDomain: "prayer-wall-c7a10.firebaseapp.com",
+  projectId: "prayer-wall-c7a10",
+  storageBucket: "prayer-wall-c7a10.firebasestorage.app",
+  messagingSenderId: "234838865859",
+  appId: "1:234838865859:web:6f42334b65329cf7beef76"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+async function loadPending() {
+  const list = document.getElementById("pendingList");
+  list.innerHTML = "";
+
+  const q = query(
+    collection(db, "prayers"),
+    where("status", "==", "pending")
+  );
+
+  const snapshot = await getDocs(q);
+
+  snapshot.forEach((docSnap) => {
+    const data = docSnap.data();
+    const id = docSnap.id;
+
+    list.innerHTML += `
+      <div class="prayer-card">
+        <strong>${data.name}</strong>
+        <p>${data.intention}</p>
+        <button onclick="approvePrayer('${id}')">Approve</button>
+        <button onclick="deletePrayer('${id}')">Delete</button>
+      </div>
+    `;
+  });
+}
+
+window.approvePrayer = async function(id) {
+  await updateDoc(doc(db, "prayers", id), {
+    status: "approved"
+  });
+  loadPending();
+};
+
+window.deletePrayer = async function(id) {
+  await deleteDoc(doc(db, "prayers", id));
+  loadPending();
+};
+
+loadPending();
+
+</script>
+</body>
+</html>
