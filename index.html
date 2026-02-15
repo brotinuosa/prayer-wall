@@ -101,6 +101,30 @@ async function loadPrayers() {
 }
 
 loadPrayers();
+  async function loadPending() {
+  adminPanel.innerHTML = "";
+
+  const q = query(
+    collection(db, "prayers"),
+    where("status", "==", "pending")
+  );
+
+  const snapshot = await getDocs(q);
+
+  snapshot.forEach((docSnap) => {
+    const data = docSnap.data();
+    const id = docSnap.id;
+
+    adminPanel.innerHTML += `
+      <div class="prayer-card">
+        <strong>${data.name}</strong>
+        <p>${data.intention}</p>
+        <button onclick="approvePrayer('${id}')">Approve</button>
+        <button onclick="deletePrayer('${id}')">Delete</button>
+      </div>
+    `;
+  });
+  }
   const adminToggle = document.getElementById("adminToggle");
 const adminPanel = document.getElementById("adminPanel");
 const adminTitle = document.getElementById("adminTitle");
