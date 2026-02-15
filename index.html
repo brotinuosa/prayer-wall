@@ -37,13 +37,23 @@ import { getFirestore, collection, addDoc, getDocs, query, where, updateDoc, del
 from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "YOUR_KEY",
-  authDomain: "YOUR_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_BUCKET",
-  messagingSenderId: "YOUR_ID",
-  appId: "YOUR_APP_ID"
+  // Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyBWx8qpiH1PmowRf0mql0MxiKqLhDfQlZ4",
+  authDomain: "prayer-wall-c7a10.firebaseapp.com",
+  projectId: "prayer-wall-c7a10",
+  storageBucket: "prayer-wall-c7a10.firebasestorage.app",
+  messagingSenderId: "234838865859",
+  appId: "1:234838865859:web:6f42334b65329cf7beef76"
 };
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);};
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
