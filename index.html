@@ -134,9 +134,9 @@ loadPrayers();
   }
   const adminToggle = document.getElementById("adminToggle");
 const adminPanel = document.getElementById("adminPanel");
-const adminTitle = document.getElementById("adminTitle");
-
-adminToggle.addEventListener("click", () => {
+const adminToggle.addEventListener("click", () => {
+  alert("Admin button is working");
+});
   const password = prompt("Enter Admin Password:");
 
   if (password === "1234") {
