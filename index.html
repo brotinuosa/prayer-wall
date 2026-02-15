@@ -140,6 +140,18 @@ adminToggle.addEventListener("click", () => {
     alert("Wrong password");
   }
 });
+  window.approvePrayer = async function(id) {
+  await updateDoc(doc(db, "prayers", id), {
+    status: "approved"
+  });
+  loadPending();
+  loadPrayers();
+};
+
+window.deletePrayer = async function(id) {
+  await deleteDoc(doc(db, "prayers", id));
+  loadPending();
+};
 
 </script>
 </body>
