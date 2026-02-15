@@ -33,33 +33,26 @@
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, updateDoc, deleteDoc, doc } 
+import { getFirestore, collection, addDoc, getDocs, query, where, updateDoc, deleteDoc, doc } 
 from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
-  // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyBWx8qpiH1PmowRf0mql0MxiKqLhDfQlZ4",
-  authDomain: "prayer-wall-c7a10.firebaseapp.com",
-  projectId: "prayer-wall-c7a10",
-  storageBucket: "prayer-wall-c7a10.firebasestorage.app",
-  messagingSenderId: "234838865859",
-  appId: "1:234838865859:web:6f42334b65329cf7beef76"
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+  apiKey: "YOUR_KEY",
+  authDomain: "YOUR_DOMAIN",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_BUCKET",
+  messagingSenderId: "YOUR_ID",
+  appId: "YOUR_APP_ID"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 const form = document.getElementById("prayerForm");
+const adminToggle = document.getElementById("adminToggle");
+const adminPanel = document.getElementById("adminPanel");
+const adminTitle = document.getElementById("adminTitle");
+const prayerList = document.getElementById("prayerList");
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -70,53 +63,31 @@ form.addEventListener("submit", async (e) => {
   await addDoc(collection(db, "prayers"), {
     name: name,
     intention: intention,
-    date: new Date(),
     status: "pending"
   });
 
-  alert("Your prayer has been submitted and is awaiting approval 🙏");
+  alert("Prayer submitted for approval 🙏");
   form.reset();
 });
 
-async function loadPrayers() {
-  const prayerList = document.getElementById("prayerList");
-  prayerList.innerHTML = "";
+adminToggle.addEventListener("click", async () => {
+  const password = prompt("Enter Admin Password:");
+
+  if (password !== "1234") {
+    alert("Wrong password");
+    return;
+  }
+
+  adminPanel.style.display = "block";
+  adminTitle.style.display = "block";
 
   const q = query(
     collection(db, "prayers"),
-    where("status", "==", "approved"),
-    orderBy("date", "desc")
+    where("status", "==", "pending")
   );
 
   const snapshot = await getDocs(q);
-
-  snapshot.forEach((doc) => {
-    const data = doc.data();
-    prayerList.innerHTML += `
-      <div class="prayer-card">
-        <strong>${data.name}</strong>
-        <p>${data.intention}</p>
-      </div>
-    `;
-  });
-}
-
-loadPrayers();
-  async function loadPending() {
   adminPanel.innerHTML = "";
-
-  const q = query(
-  collection(db, "prayers"),
-  where("status", "==", "approved"),
-  orderBy("date", "desc")
-);
-    const q = query(
-  collection(db, "prayers"),
-  where("status", "==", "approved")
-);
-    
-
-  const snapshot = await getDocs(q);
 
   snapshot.forEach((docSnap) => {
     const data = docSnap.data();
@@ -131,35 +102,42 @@ loadPrayers();
       </div>
     `;
   });
-  }
-  const adminToggle = document.getElementById("adminToggle");
-const adminPanel = document.getElementById("adminPanel");
-const adminToggle.addEventListener("click", () => {
-  alert("Admin button is working");
 });
-  const password = prompt("Enter Admin Password:");
 
-  if (password === "1234") {
-    adminPanel.style.display = "block";
-    adminTitle.style.display = "block";
-    loadPending();
-  } else {
-    alert("Wrong password");
-  }
-});
-  window.approvePrayer = async function(id) {
+window.approvePrayer = async function(id) {
   await updateDoc(doc(db, "prayers", id), {
     status: "approved"
   });
-  loadPending();
-  loadPrayers();
+  location.reload();
 };
 
 window.deletePrayer = async function(id) {
   await deleteDoc(doc(db, "prayers", id));
-  loadPending();
+  location.reload();
 };
 
-</script>
-</body>
-</html>
+async function loadApproved() {
+  const q = query(
+    collection(db, "prayers"),
+    where("status", "==", "approved")
+  );
+
+  const snapshot = await getDocs(q);
+  prayerList.innerHTML = "";
+
+  snapshot.forEach((docSnap) => {
+    const data = docSnap.data();
+
+    prayerList.innerHTML += `
+      <div class="prayer-card">
+        <strong>${data.name}</strong>
+        <p>${data.intention}</p>
+      </div>
+    `;
+  });
+}
+
+loadApproved();
+
+  </script>
+
